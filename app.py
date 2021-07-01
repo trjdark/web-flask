@@ -1,12 +1,12 @@
 from flask import Flask
-from flask import url_for, escape, render_template
+from flask import render_template, request
 from conf.config import *
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 @app.route('/')
 def index():
-    name = 'Grey Li'
+    user = {'name' : 'Grey Li',}
     movies = [
         {'title': 'My Neighbor Totoro', 'year': '1988'},
         {'title': 'Dead Poets Society', 'year': '1989'},
@@ -19,7 +19,7 @@ def index():
         {'title': 'WALL-E', 'year': '2008'},
         {'title': 'The Pork of Music', 'year': '2012'},
     ]
-    return render_template('index.html', name = name, movies = movies)
+    return render_template('index.html', user = user, movies = movies)
 
 @app.route('/user/<id>')
 def user(id):
@@ -46,9 +46,25 @@ def a():
         <body>
             <h1>Hello, ''' + user['username'] + '''!, you’re ''' + user['age'] + ''' years old.</h1>
         </body>
-    </html>
-    
+    </html>  
     '''
+
+@app.route('/form', methods=['GET', 'POST'])
+def form():
+    user = { 'name': '表单' }
+
+
+    if request.method == 'POST':
+        print(request.form.get('name'))
+    return render_template('form.html', user = user)
+
+
+# 404页面未找到
+@app.errorhandler(404)
+def page_not_found(e):
+    print(e)
+    return '错误页面'
+
 if __name__ =="__main__":
     app.run(debug=True,port=8080)
 

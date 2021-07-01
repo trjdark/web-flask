@@ -35,3 +35,10 @@ class SQLManager(object):
         self.cursor.execute(sql, args)
         result = self.cursor.fetchone()
         return result
+    # 使用with语句可以实现缩进结束自动关闭文件句柄的例子
+    def __enter__(self):
+        return self
+    # 退出with语句块自动执行
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print(111)
+        self.close()
