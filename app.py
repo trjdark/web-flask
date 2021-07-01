@@ -1,6 +1,8 @@
 from flask import Flask
 from flask import url_for, escape, render_template
+from conf.config import *
 app = Flask(__name__)
+app.config.from_object(__name__)
 
 @app.route('/')
 def index():
@@ -19,12 +21,15 @@ def index():
     ]
     return render_template('index.html', name = name, movies = movies)
 
-@app.route('/user/<int:name>')
-def user(name):
-
-    print(url_for('index'))
-
-    return 'user: %s' % escape(name)
+@app.route('/user/<id>')
+def user(id):
+    db = SQLManager()
+    user = db.get_one('SELECT * from `chart_user` where id = ' + id)
+    db.close()
+    if (user == None):
+        return  'no user'
+    else:
+        return 'user: ' + user['username']
 
 @app.route('/test')
 def a():
